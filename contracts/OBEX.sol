@@ -64,7 +64,7 @@ contract OBEX is Ownable, ReentrancyGuard{
         uint256[] memory amountFromMaker,
         uint256[] memory amountTokens,
         uint256[] memory amountSold,
-        bool[] memory isEnd                                                                                                 //memory? no calldata?
+        bool[] memory isEnd
     ) {
         uint256 length = ordersByMaker[msg.sender].length;
         uint256 pages = length / _limit;
@@ -100,7 +100,7 @@ contract OBEX is Ownable, ReentrancyGuard{
 
             for (uint256 i = _page * _limit; i <= _page * _limit + residue; i++) { //from 2*100 to 2*100+60 : 200~260
                 orderIds[i] = ordersByMaker[msg.sender][i];
-                Order storage o = orders[orderIds[i]];                                                                             //why storage?
+                Order memory o = orders[orderIds[i]];
                 tokenFromMaker[i] = o.tokenFromMaker;
                 tokenFromTaker[i] = o.tokenFromTaker;
                 amountFromMaker[i] = o.amountFromMaker;
@@ -134,7 +134,7 @@ contract OBEX is Ownable, ReentrancyGuard{
 
             for (uint256 i = _page * _limit; i < (_page + 1) * _limit; i++) { //from 0*100 before 1*100 : 0~99 && 100~199 && 200~299
                 orderIds[i] = ordersByTokens[_tokenA][_tokenB][i];
-                Order storage o = orders[orderIds[i]];                                                                           //why storage?
+                Order memory o = orders[orderIds[i]]; 
                 maker[i] = o.maker;
                 amountFromMaker[i] = o.amountFromMaker;
                 amountTokens[i] = o.amountTokens;
@@ -151,7 +151,7 @@ contract OBEX is Ownable, ReentrancyGuard{
 
             for (uint256 i = _page * _limit; i <= _page * _limit + residue; i++) { //from 2*100 to 2*100+60 : 200~260
                 orderIds[i] = ordersByTokens[_tokenA][_tokenB][i];
-                Order storage o = orders[orderIds[i]];                                                                           //why storage?
+                Order memory o = orders[orderIds[i]]; 
                 maker[i] = o.maker;
                 amountFromMaker[i] = o.amountFromMaker;
                 amountTokens[i] = o.amountTokens;
