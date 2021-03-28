@@ -1,12 +1,12 @@
 {
   "_format": "hh-sol-cache-2",
   "files": {
-    "/Users/thegreathb/workspace/obex/contracts/IERC20.sol": {
-      "lastModificationDate": 1615368992189,
-      "contentHash": "b6d92e5ec623074d8a9cf8b4378c5c22",
-      "sourceName": "contracts/IERC20.sol",
+    "C:\\Users\\kavan\\Documents\\GitHub\\obex\\node_modules\\@openzeppelin\\contracts\\token\\ERC20\\IERC20.sol": {
+      "lastModificationDate": 1616864712949,
+      "contentHash": "c7492a9ab60ba083d345f893d5e0f33c",
+      "sourceName": "@openzeppelin/contracts/token/ERC20/IERC20.sol",
       "solcConfig": {
-        "version": "0.6.12",
+        "version": "0.8.0",
         "settings": {
           "optimizer": {
             "enabled": false,
@@ -29,18 +29,160 @@
       },
       "imports": [],
       "versionPragmas": [
-        "=0.6.12"
+        "^0.8.0"
       ],
       "artifacts": [
         "IERC20"
       ]
     },
-    "/Users/thegreathb/workspace/obex/contracts/OBEX_ver_1.sol": {
-      "lastModificationDate": 1615369571933,
-      "contentHash": "82d8921c361ccc85ae4faf336515b365",
-      "sourceName": "contracts/OBEX_ver_1.sol",
+    "C:\\Users\\kavan\\Documents\\GitHub\\obex\\node_modules\\@openzeppelin\\contracts\\access\\Ownable.sol": {
+      "lastModificationDate": 1616864713024,
+      "contentHash": "17d9f40220b0ab370db2c77e7c92c4ef",
+      "sourceName": "@openzeppelin/contracts/access/Ownable.sol",
       "solcConfig": {
-        "version": "0.6.12",
+        "version": "0.8.0",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../utils/Context.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "Ownable"
+      ]
+    },
+    "C:\\Users\\kavan\\Documents\\GitHub\\obex\\node_modules\\@openzeppelin\\contracts\\security\\ReentrancyGuard.sol": {
+      "lastModificationDate": 1616864713068,
+      "contentHash": "1d45ab4bd9b10c657bd26a957be5bcd9",
+      "sourceName": "@openzeppelin/contracts/security/ReentrancyGuard.sol",
+      "solcConfig": {
+        "version": "0.8.0",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "ReentrancyGuard"
+      ]
+    },
+    "C:\\Users\\kavan\\Documents\\GitHub\\obex\\node_modules\\@openzeppelin\\contracts\\utils\\Context.sol": {
+      "lastModificationDate": 1616864712161,
+      "contentHash": "bc047f55d4e6dcc5a9c7ee096f530312",
+      "sourceName": "@openzeppelin/contracts/utils/Context.sol",
+      "solcConfig": {
+        "version": "0.8.0",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "Context"
+      ]
+    },
+    "C:\\Users\\kavan\\Documents\\GitHub\\obex\\contracts\\OBEX.sol": {
+      "lastModificationDate": 1616921301928,
+      "contentHash": "49d2a1cab73c8ac87fd57fe30239eec8",
+      "sourceName": "contracts/OBEX.sol",
+      "solcConfig": {
+        "version": "0.8.0",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/access/Ownable.sol",
+        "@openzeppelin/contracts/security/ReentrancyGuard.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "OBEX"
+      ]
+    },
+    "C:\\Users\\kavan\\Documents\\GitHub\\obex\\node_modules\\@openzeppelin\\contracts\\token\\ERC20\\ERC20.sol": {
+      "lastModificationDate": 1616864712578,
+      "contentHash": "11cf6f3b9d83b92ec458961ae3d0533f",
+      "sourceName": "@openzeppelin/contracts/token/ERC20/ERC20.sol",
+      "solcConfig": {
+        "version": "0.8.0",
         "settings": {
           "optimizer": {
             "enabled": false,
@@ -63,21 +205,21 @@
       },
       "imports": [
         "./IERC20.sol",
-        "./SafeMath.sol"
+        "../../utils/Context.sol"
       ],
       "versionPragmas": [
-        "=0.6.12"
+        "^0.8.0"
       ],
       "artifacts": [
-        "OBEX"
+        "ERC20"
       ]
     },
-    "/Users/thegreathb/workspace/obex/contracts/SafeMath.sol": {
-      "lastModificationDate": 1615366466354,
-      "contentHash": "e161dae51b41ce72e6d78548f0a81193",
-      "sourceName": "contracts/SafeMath.sol",
+    "C:\\Users\\kavan\\Documents\\GitHub\\obex\\contracts\\Token.sol": {
+      "lastModificationDate": 1616918511999,
+      "contentHash": "a93b08f2aace560cc13d863fbed375a7",
+      "sourceName": "contracts/Token.sol",
       "solcConfig": {
-        "version": "0.6.12",
+        "version": "0.8.0",
         "settings": {
           "optimizer": {
             "enabled": false,
@@ -98,13 +240,14 @@
           }
         }
       },
-      "imports": [],
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/ERC20.sol"
+      ],
       "versionPragmas": [
-        "0.6.12"
+        "^0.8.0"
       ],
       "artifacts": [
-        "SafeMath",
-        "SafeMath128"
+        "Token"
       ]
     }
   }
