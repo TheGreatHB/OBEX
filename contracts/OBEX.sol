@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity =0.8.3;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -19,7 +19,7 @@ contract OBEX is Ownable, ReentrancyGuard{
     mapping(address => bytes32[]) public ordersByMaker;
     mapping(address => mapping (address => bytes32[])) public ordersByTokens;
     mapping(bytes32 => Order) public orders;
-    mapping(address => uint256) private nonces;
+    mapping(address => uint256) public nonces;
 
 	address public constant ETH_ADDRESS = address(0);
 
@@ -51,114 +51,18 @@ contract OBEX is Ownable, ReentrancyGuard{
     event Cancel(bytes32 indexed orderId);
 
     constructor(uint16 _feePercent) {
+        require(_feePercent <= 10000, "input value is more than 100%");
         feeAddress = msg.sender;
         feePercent = _feePercent;
     }
 
     //view fxns
-    //just for example.
-    function myOrder(uint256 _page, uint256 _limit) external view returns (
-        bytes32[] memory orderIds,
-        address[] memory tokenFromMaker,
-        address[] memory tokenFromTaker,
-        uint256[] memory amountFromMaker,
-        uint256[] memory amountTokens,
-        uint256[] memory amountSold,
-        bool[] memory isEnd
-    ) {
-        uint256 length = ordersByMaker[msg.sender].length;
-        uint256 pages = length / _limit;
-        uint256 residue = length % _limit;
-
-        if(_page < pages) {     //ex 260 length. 2P60L  //// [[0P 100L -> 0~99 // 1P 100L -> 100~199]] // 2P 100L -> 200~260
-            orderIds = new bytes32[](_limit);
-            tokenFromMaker = new address[](_limit);
-            tokenFromTaker = new address[](_limit);
-            amountFromMaker = new uint256[](_limit);
-            amountTokens = new uint256[](_limit);
-            amountSold = new uint256[](_limit);
-            isEnd = new bool[](_limit);
-
-            for (uint256 i = _page * _limit; i < (_page + 1) * _limit; i++) { //from 0*100 before 1*100 : 0~99 && 100~199 && 200~299
-                orderIds[i] = ordersByMaker[msg.sender][i];
-                Order storage o = orders[orderIds[i]];                                                                           //why storage?
-                tokenFromMaker[i] = o.tokenFromMaker;
-                tokenFromTaker[i] = o.tokenFromTaker;
-                amountFromMaker[i] = o.amountFromMaker;
-                amountTokens[i] = o.amountTokens;
-                amountSold[i] = o.amountSold;
-                isEnd[i] = o.isEnd;
-            }
-        } else {    //260 length. 2P60L  //// 0P 100L -> 0~99 // 1P 100L -> 100~199 // [[[2P 100L -> 200~260]]]
-            orderIds = new bytes32[](residue);
-            tokenFromMaker = new address[](residue);
-            tokenFromTaker = new address[](residue);
-            amountFromMaker = new uint256[](residue);
-            amountTokens = new uint256[](residue);
-            amountSold = new uint256[](residue);
-            isEnd = new bool[](residue);
-
-            for (uint256 i = _page * _limit; i <= _page * _limit + residue; i++) { //from 2*100 to 2*100+60 : 200~260
-                orderIds[i] = ordersByMaker[msg.sender][i];
-                Order memory o = orders[orderIds[i]];
-                tokenFromMaker[i] = o.tokenFromMaker;
-                tokenFromTaker[i] = o.tokenFromTaker;
-                amountFromMaker[i] = o.amountFromMaker;
-                amountTokens[i] = o.amountTokens;
-                amountSold[i] = o.amountSold;
-                isEnd[i] = o.isEnd;
-            }
-        }
+    function _ordersByMaker(address _maker) external view returns (bytes32[] memory) {
+        return ordersByMaker[_maker];
     }
 
-    //just for example.
-    function orderBook(address _tokenA, address _tokenB, uint256 _page, uint256 _limit) external view returns (
-        bytes32[] memory orderIds,
-        address[] memory maker,
-        uint256[] memory amountFromMaker,
-        uint256[] memory amountTokens,
-        uint256[] memory amountSold,
-        bool[] memory isEnd
-    ) {
-        uint256 length = ordersByTokens[_tokenA][_tokenB].length;
-        uint256 pages = length / _limit;
-        uint256 residue = length % _limit;
-
-        if(_page < pages) {     //ex 260 length. 2P60L  //// [[0P 100L -> 0~99 // 1P 100L -> 100~199]] // 2P 100L -> 200~260
-            orderIds = new bytes32[](_limit);
-            maker = new address[](_limit);
-            amountFromMaker = new uint256[](_limit);
-            amountTokens = new uint256[](_limit);
-            amountSold = new uint256[](_limit);
-            isEnd = new bool[](_limit);
-
-            for (uint256 i = _page * _limit; i < (_page + 1) * _limit; i++) { //from 0*100 before 1*100 : 0~99 && 100~199 && 200~299
-                orderIds[i] = ordersByTokens[_tokenA][_tokenB][i];
-                Order memory o = orders[orderIds[i]]; 
-                maker[i] = o.maker;
-                amountFromMaker[i] = o.amountFromMaker;
-                amountTokens[i] = o.amountTokens;
-                amountSold[i] = o.amountSold;
-                isEnd[i] = o.isEnd;
-            }
-        } else {    //260 length. 2P60L  //// 0P 100L -> 0~99 // 1P 100L -> 100~199 // [[[2P 100L -> 200~260]]]
-            orderIds = new bytes32[](residue);
-            maker = new address[](residue);
-            amountFromMaker = new uint256[](residue);
-            amountTokens = new uint256[](residue);
-            amountSold = new uint256[](residue);
-            isEnd = new bool[](residue);
-
-            for (uint256 i = _page * _limit; i <= _page * _limit + residue; i++) { //from 2*100 to 2*100+60 : 200~260
-                orderIds[i] = ordersByTokens[_tokenA][_tokenB][i];
-                Order memory o = orders[orderIds[i]]; 
-                maker[i] = o.maker;
-                amountFromMaker[i] = o.amountFromMaker;
-                amountTokens[i] = o.amountTokens;
-                amountSold[i] = o.amountSold;
-                isEnd[i] = o.isEnd;
-            }
-        }
+    function _ordersByTokens(address _tokenA, address _tokenB) external view returns (bytes32[] memory) {
+        return ordersByTokens[_tokenA][_tokenB];
     }
 
     function makerOrderLength(address _maker) public view returns (uint256) {
@@ -193,7 +97,7 @@ contract OBEX is Ownable, ReentrancyGuard{
     }
 
 	function _hash(address _maker, address _token0, address _token1) internal returns (bytes32) {
-        return keccak256(abi.encodePacked(block.number, _maker, _token0, _token1, nonces[_maker]++));
+        return keccak256(abi.encodePacked(_maker, _token0, _token1, nonces[_maker]++));
 	}
 
 
@@ -223,24 +127,28 @@ contract OBEX is Ownable, ReentrancyGuard{
         if(token0 == address(0)) {
             require(msg.value == 0, "Don't need to pay ETH");
             require(_amountTakerPayTokens != 0, "Have to pay Tokens");
-            require((_amountTakerPayTokens / _amountTakerRcvWOFee) >= (amount1 / amount0), "less price");
+            require((_amountTakerPayTokens * amount0) >= (amount1 * _amountTakerRcvWOFee), "less price");
 
-            feeTokenAmounts[token1] += _amountTakerPayTokens * feePercent / 10000;
+            uint256 _feeToken = _amountTakerPayTokens * feePercent / 10000;
+            feeTokenAmounts[token1] += _feeToken;
             IERC20(token1).transferFrom(msg.sender, address(this), _amountTakerPayTokens);
-            IERC20(token1).transfer(maker, _amountTakerPayTokens - feeTokenAmounts[token1]);
+            IERC20(token1).transfer(maker, _amountTakerPayTokens - _feeToken);
             
-            feeETHAmounts += _amountTakerRcvWOFee * feePercent / 10000;
-            safeTransfer(msg.sender, _amountTakerRcvWOFee - feeETHAmounts);
+            uint256 _feeETH = _amountTakerRcvWOFee * feePercent / 10000;
+            feeETHAmounts += _feeETH;
+            payable(msg.sender).transfer(_amountTakerRcvWOFee - _feeETH);
         } else {
             require(_amountTakerPayTokens == 0, "Don't need to pay Tokens");
             require(msg.value != 0, "Have to pay ETH");
-            require((msg.value / _amountTakerRcvWOFee) >= (amount1 / amount0), "less price");
+            require((msg.value * amount0) >= (amount1 * _amountTakerRcvWOFee), "less price");
 
-            feeETHAmounts += msg.value * feePercent / 10000;
-            safeTransfer(maker, msg.value - feeETHAmounts);
+            uint256 _feeETH = msg.value * feePercent / 10000;
+            feeETHAmounts += _feeETH;
+            payable(maker).transfer(msg.value - _feeETH);
 
-            feeTokenAmounts[token0] += _amountTakerRcvWOFee * feePercent / 10000;
-            IERC20(token0).transfer(msg.sender, _amountTakerRcvWOFee - feeTokenAmounts[token0]);
+            uint256 _feeToken = _amountTakerRcvWOFee * feePercent / 10000;
+            feeTokenAmounts[token0] += _feeToken;
+            IERC20(token0).transfer(msg.sender, _amountTakerRcvWOFee - _feeToken);
         }
 
         emit Take(_orderId, msg.sender, token0, token1, amount0, _amountTakerRcvWOFee, amountSold, isEnd);
@@ -262,7 +170,7 @@ contract OBEX is Ownable, ReentrancyGuard{
         o.isEnd = true;
 
         if (token0 == address(0)) {
-            safeTransfer(msg.sender, amount0 - sold);
+            payable(msg.sender).transfer(amount0 - sold);
         } else {
             IERC20(token0).transfer(msg.sender, amount0 - sold);
         }
@@ -279,28 +187,27 @@ contract OBEX is Ownable, ReentrancyGuard{
         feePercent = _percent;
     }
 
-    function withdrawFee(address _token, uint256 amount) external onlyOwner nonReentrant {
+    function withdrawFee(address _token, uint256 amount) external nonReentrant {
+        require(msg.sender == feeAddress, "Access denied");
         if (_token == address(0)) {
             if(amount <= feeETHAmounts) { 
                 feeETHAmounts -= amount;
-                safeTransfer(msg.sender, amount);
+                payable(msg.sender).transfer(amount);
             } else {
+                uint256 fee = feeETHAmounts;
                 feeETHAmounts = 0;
-                safeTransfer(msg.sender, feeETHAmounts);
+                payable(msg.sender).transfer(fee);
             }
         } else {
             if(amount <= feeTokenAmounts[_token]) {
                 feeTokenAmounts[_token] -= amount;
                 IERC20(_token).transfer(feeAddress, amount);
             } else {
+                uint256 fee = feeTokenAmounts[_token];
                 feeTokenAmounts[_token] = 0;
-                IERC20(_token).transfer(feeAddress, feeTokenAmounts[_token]);
+                IERC20(_token).transfer(feeAddress, fee);
             }
         }
     }
-    
-    function safeTransfer(address _to, uint256 _amount) internal {
-        (bool success,) = _to.call{value : _amount}("");
-        require(success, 'Transfer failed');
-    }
+   
 }

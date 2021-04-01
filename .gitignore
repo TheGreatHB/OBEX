@@ -1,5 +1,4 @@
 .history
-test
 
 # Created by .ignore support plugin (hsz.mobi)
 ### VisualStudioCode template
@@ -376,3 +375,4 @@ testeth
 node_modules
 bin_output
 logs
+cache
