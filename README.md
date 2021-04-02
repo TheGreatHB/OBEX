@@ -1,5 +1,5 @@
 # OBEX
-**OBEX** is an decentralized exchange (**DEX**) where people can trade `their ERC20 tokens to ETH` and `their ETH to ERC20 tokens` through **orderbook** system.
+**OBEX** is an decentralized exchange (**DEX**) where people can trade their ERC20 tokens to ETH and their ETH to ERC20 tokens through **orderbook** system.
 
 
 ## Features
@@ -19,6 +19,10 @@ With Orderbook, you can find orders you've made or orders you want to find.
 Tests are located in the [test](https://github.com/TheGreatHB/OBEX/tree/main/test) directory and can be modified as required. To run them:
 
 * ```npx hardhat test```
+
+### Test Coverage
+<img src="https://user-images.githubusercontent.com/74754077/113393199-47fad180-93d1-11eb-9b8e-dfb9a9b6018e.png" width="600">
+
 
 ## Contributions
 **Please open all pull requests against the `main` branch.**
