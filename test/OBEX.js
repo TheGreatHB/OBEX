@@ -87,12 +87,12 @@ describe("OBEX contract", function () {
             await ex.connect(addr1).makeOrderFromETHToTokens(token.address, 2000, {value:2000});
             await ex.connect(addr2).makeOrderFromETHToTokens(token.address, 3000, {value:3000});
 
-            let hash0 = await _hash(addr1.address,ethAdd,token.address,await ex.nonces(addr1.address));
+            const hash0 = await _hash(addr1.address,ethAdd,token.address,await ex.nonces(addr1.address));
             await expect(ex.connect(addr1).makeOrderFromETHToTokens(
                 token.address, 4000, {value:4000})).to.emit(ex, "Make")
                 .withArgs(hash0, addr1.address, ethAdd, token.address, 4000, 4000);
 
-            let hash1 = await _hash(addr1.address,ethAdd,token.address,await ex.nonces(addr1.address));
+            const hash1 = await _hash(addr1.address,ethAdd,token.address,await ex.nonces(addr1.address));
             await ex.connect(addr1).makeOrderFromETHToTokens(token.address, 5000, {value:5000});
 
             expect(await ex.makerOrderLength(addr1.address)).to.equal(4);
@@ -117,18 +117,18 @@ describe("OBEX contract", function () {
             await expect(ex.connect(addr3).takeOrder(hash1, 3000, 1000)).to.emit(ex, "Take")
                 .withArgs(hash1,addr3.address,ethAdd,token.address,5000,1000,1000,false);
 
-            let addr1TokenBalance0 = await token.balanceOf(addr1.address);
-            let addr3TokenBalance0 = await token.balanceOf(addr3.address);
-            let feeTokenBalance0 = await ex.feeTokenAmounts(token.address);
-            let feeETHBalance0 = await ex.feeETHAmounts();
+            const addr1TokenBalance0 = await token.balanceOf(addr1.address);
+            const addr3TokenBalance0 = await token.balanceOf(addr3.address);
+            const feeTokenBalance0 = await ex.feeTokenAmounts(token.address);
+            const feeETHBalance0 = await ex.feeETHAmounts();
 
             await expect(() => ex.connect(addr3).takeOrder(hash1, 3000, 2000))
                 .to.changeEtherBalance(addr3, 1900);
             
-            let addr1TokenBalance1 = await token.balanceOf(addr1.address);
-            let addr3TokenBalance1 = await token.balanceOf(addr3.address);
-            let feeTokenBalance1 = await ex.feeTokenAmounts(token.address);
-            let feeETHBalance1 = await ex.feeETHAmounts();
+            const addr1TokenBalance1 = await token.balanceOf(addr1.address);
+            const addr3TokenBalance1 = await token.balanceOf(addr3.address);
+            const feeTokenBalance1 = await ex.feeTokenAmounts(token.address);
+            const feeETHBalance1 = await ex.feeETHAmounts();
 
             await expect(addr1TokenBalance1 - addr1TokenBalance0).to.equal(2850);
             await expect(addr3TokenBalance1 - addr3TokenBalance0).to.equal(-3000);
@@ -142,7 +142,7 @@ describe("OBEX contract", function () {
             await expect(ex.connect(addr1).cancel(hash1)).to.be.revertedWith("It's end");
             await expect(ex.connect(addr3).takeOrder(hash1, 3000, 2000)).to.be.revertedWith("It's over");
 
-            let hash2 = await _hash(addr3.address,ethAdd,token.address,await ex.nonces(addr3.address));
+            const hash2 = await _hash(addr3.address,ethAdd,token.address,await ex.nonces(addr3.address));
             await ex.connect(addr3).makeOrderFromETHToTokens(token.address, 2000, {value:5000});
             await ex.connect(addr2).takeOrder(hash2, 4000, 4500);
 
@@ -163,11 +163,11 @@ describe("OBEX contract", function () {
             await ex.connect(addr1).makeOrderFromTokensToETH(token.address, 2000, 2000);
             await ex.connect(addr2).makeOrderFromTokensToETH(token.address, 3000, 3000);
 
-            let hash0 = await _hash(addr1.address,token.address,ethAdd,await ex.nonces(addr1.address));
+            const hash0 = await _hash(addr1.address,token.address,ethAdd,await ex.nonces(addr1.address));
             await expect(ex.connect(addr1).makeOrderFromTokensToETH(token.address, 4000, 4000)).to.emit(ex, "Make")
                 .withArgs(hash0, addr1.address, token.address, ethAdd, 4000, 4000);
 
-            let hash1 = await _hash(addr1.address,token.address,ethAdd,await ex.nonces(addr1.address));
+            const hash1 = await _hash(addr1.address,token.address,ethAdd,await ex.nonces(addr1.address));
             await ex.connect(addr1).makeOrderFromTokensToETH(token.address, 5000, 5000);
 
             expect(await ex.makerOrderLength(addr1.address)).to.equal(4);
@@ -193,16 +193,16 @@ describe("OBEX contract", function () {
             await expect(ex.connect(addr3).takeOrder(hash1, 0, 1000, {value:3000})).to.emit(ex, "Take")
                 .withArgs(hash1, addr3.address, token.address, ethAdd, 5000, 1000, 1000, false);
 
-            let addr3TokenBalance0 = await token.balanceOf(addr3.address);
-            let feeTokenBalance0 = await ex.feeTokenAmounts(token.address);
-            let feeETHBalance0 = await ex.feeETHAmounts();
+            const addr3TokenBalance0 = await token.balanceOf(addr3.address);
+            const feeTokenBalance0 = await ex.feeTokenAmounts(token.address);
+            const feeETHBalance0 = await ex.feeETHAmounts();
 
             await expect(() => ex.connect(addr3).takeOrder(hash1, 0, 2000, {value:3000}))
                 .to.changeEtherBalances([addr1,addr3], [2850,-3000]);
             
-            let addr3TokenBalance1 = await token.balanceOf(addr3.address);
-            let feeTokenBalance1 = await ex.feeTokenAmounts(token.address);
-            let feeETHBalance1 = await ex.feeETHAmounts();
+            const addr3TokenBalance1 = await token.balanceOf(addr3.address);
+            const feeTokenBalance1 = await ex.feeTokenAmounts(token.address);
+            const feeETHBalance1 = await ex.feeETHAmounts();
 
             await expect(addr3TokenBalance1 - addr3TokenBalance0).to.equal(1900);
             await expect(feeTokenBalance1 - feeTokenBalance0).to.equal(100);
@@ -216,7 +216,7 @@ describe("OBEX contract", function () {
             await expect(ex.connect(addr3).takeOrder(hash1, 0, 2000, {value:3000}))
                 .to.be.revertedWith("It's over");
 
-            let hash2 = await _hash(addr3.address,token.address,ethAdd,await ex.nonces(addr3.address));
+            const hash2 = await _hash(addr3.address,token.address,ethAdd,await ex.nonces(addr3.address));
             await ex.connect(addr3).makeOrderFromTokensToETH(token.address, 4000, 2000);
             await ex.connect(addr2).takeOrder(hash2, 0, 3100, {value:1800});
 
@@ -226,11 +226,11 @@ describe("OBEX contract", function () {
 
     describe("Withdraw Fee", function () {
         it("Withdraw Fee", async function () {
-            let hash0 = await _hash(addr1.address,ethAdd,token.address,await ex.nonces(addr1.address));
+            const hash0 = await _hash(addr1.address,ethAdd,token.address,await ex.nonces(addr1.address));
             await ex.connect(addr1).makeOrderFromETHToTokens(token.address, 1000, {value:1000});
-            let hash1 = await _hash(addr1.address,ethAdd,token.address,await ex.nonces(addr1.address));
+            const hash1 = await _hash(addr1.address,ethAdd,token.address,await ex.nonces(addr1.address));
             await ex.connect(addr1).makeOrderFromETHToTokens(token.address, 2000, {value:2000});
-            let hash2 = await _hash(addr1.address,ethAdd,token.address,await ex.nonces(addr1.address));
+            const hash2 = await _hash(addr1.address,ethAdd,token.address,await ex.nonces(addr1.address));
             await ex.connect(addr1).makeOrderFromETHToTokens(token.address, 3000, {value:3000});
 
             await ex.connect(addr2).takeOrder(hash0, 2000, 1000);
@@ -260,21 +260,21 @@ describe("OBEX contract", function () {
             OB = await ethers.getContractFactory("FindOrderBook");
             ob = await OB.deploy(ex.address);
   
-            let hash0 = await _hash(addr1.address,ethAdd,token.address,await ex.nonces(addr1.address));
+            const hash0 = await _hash(addr1.address,ethAdd,token.address,await ex.nonces(addr1.address));
             await ex.connect(addr1).makeOrderFromETHToTokens(token.address, 1000, {value:1000});
-            let hash1 = await _hash(addr2.address,ethAdd,token.address,await ex.nonces(addr2.address));
+            const hash1 = await _hash(addr2.address,ethAdd,token.address,await ex.nonces(addr2.address));
             await ex.connect(addr2).makeOrderFromETHToTokens(token.address, 2000, {value:2000});
-            let hash2 = await _hash(addr3.address,ethAdd,token.address,await ex.nonces(addr3.address));
+            const hash2 = await _hash(addr3.address,ethAdd,token.address,await ex.nonces(addr3.address));
             await ex.connect(addr3).makeOrderFromETHToTokens(token.address, 3000, {value:3000});
-            let hash3 = await _hash(addr1.address,ethAdd,token.address,await ex.nonces(addr1.address));
+            const hash3 = await _hash(addr1.address,ethAdd,token.address,await ex.nonces(addr1.address));
             await ex.connect(addr1).makeOrderFromETHToTokens(token.address, 4000, {value:4000});
-            let hash4 = await _hash(addr1.address,ethAdd,token.address,await ex.nonces(addr1.address));
+            const hash4 = await _hash(addr1.address,ethAdd,token.address,await ex.nonces(addr1.address));
             await ex.connect(addr1).makeOrderFromETHToTokens(token.address, 5000, {value:5000});
             // addr1 : 3   addr2,addr3 : 1,1
 
             await expect(ob.myOrder(0,1)).to.be.reverted;
 
-            let order0 = await ob.connect(addr1).myOrder(0,2);
+            const order0 = await ob.connect(addr1).myOrder(0,2);
             
             expect(order0.orderIds[0]).to.equal(hash0);
             expect(order0.orderIds[1]).to.equal(hash3);
@@ -291,7 +291,7 @@ describe("OBEX contract", function () {
             expect(order0.isEnd[0]).to.equal(false);
             expect(order0.isEnd[1]).to.equal(false);
             
-            let order1 = await ob.connect(addr1).myOrder(1,2);
+            const order1 = await ob.connect(addr1).myOrder(1,2);
             expect(order1.orderIds[0]).to.equal(hash4);
             expect(order1.tokenFromMaker[0]).to.equal(ethAdd);
             expect(order1.tokenFromTaker[0]).to.equal(token.address);
@@ -302,7 +302,7 @@ describe("OBEX contract", function () {
             
             await expect(ob.orderBook(ethAdd,token.address,0,1)).to.be.reverted;
 
-            let order2 = await ob.orderBook(ethAdd,token.address,0,3);
+            const order2 = await ob.orderBook(ethAdd,token.address,0,3);
 
             expect(order2.orderIds[0]).to.equal(hash0);
             expect(order2.orderIds[1]).to.equal(hash1);
@@ -323,7 +323,7 @@ describe("OBEX contract", function () {
             expect(order2.isEnd[1]).to.equal(false);
             expect(order2.isEnd[2]).to.equal(false);
 
-            let order3 = await ob.orderBook(ethAdd,token.address,1,3);
+            const order3 = await ob.orderBook(ethAdd,token.address,1,3);
 
             expect(order3.orderIds[0]).to.equal(hash3);
             expect(order3.orderIds[1]).to.equal(hash4);
@@ -338,14 +338,14 @@ describe("OBEX contract", function () {
             expect(order3.isEnd[0]).to.equal(false);
             expect(order3.isEnd[1]).to.equal(false);
 
-            let hash5 = await _hash(owner.address,token.address,ethAdd, await ex.nonces(owner.address));
+            const hash5 = await _hash(owner.address,token.address,ethAdd, await ex.nonces(owner.address));
             await ex.connect(owner).makeOrderFromTokensToETH(token.address, 1000, 1000);
-            let hash6 = await _hash(addr2.address,token.address,ethAdd, await ex.nonces(addr2.address));
+            const hash6 = await _hash(addr2.address,token.address,ethAdd, await ex.nonces(addr2.address));
             await ex.connect(addr2).makeOrderFromTokensToETH(token.address, 2000, 2000);
-            let hash7 = await _hash(owner.address,token.address,ethAdd, await ex.nonces(owner.address));
+            const hash7 = await _hash(owner.address,token.address,ethAdd, await ex.nonces(owner.address));
             await ex.connect(owner).makeOrderFromTokensToETH(token.address, 3000, 3000);
 
-            let order4 = await ob.orderBook(token.address,ethAdd,0,5);
+            const order4 = await ob.orderBook(token.address,ethAdd,0,5);
             expect(order4.orderIds[0]).to.equal(hash5);
             expect(order4.orderIds[1]).to.equal(hash6);
             expect(order4.orderIds[2]).to.equal(hash7);
@@ -365,10 +365,10 @@ describe("OBEX contract", function () {
             expect(order4.isEnd[1]).to.equal(false);
             expect(order4.isEnd[2]).to.equal(false);
 
-            let order5 = await ob.connect(owner).myOrder(1,15);
+            const order5 = await ob.connect(owner).myOrder(1,15);
             expect(order5.orderIds[0]).to.equal(ethers.constants.HashZero);
             
-            let order6 = await ob.orderBook(token.address,ethAdd,1,30);
+            const order6 = await ob.orderBook(token.address,ethAdd,1,30);
             expect(order6.orderIds[0]).to.equal(ethers.constants.HashZero);
         });
   });
