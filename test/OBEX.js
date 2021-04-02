@@ -257,7 +257,7 @@ describe("OBEX contract", function () {
     describe("OrderBook", function () {
         it("OrderBook", async function () {
 
-            OB = await ethers.getContractFactory("FindOrderBook");
+            OB = await ethers.getContractFactory("OrderBook");
             ob = await OB.deploy(ex.address);
   
             const hash0 = await _hash(addr1.address,ethAdd,token.address,await ex.nonces(addr1.address));
